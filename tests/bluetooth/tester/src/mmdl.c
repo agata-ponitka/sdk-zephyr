@@ -72,6 +72,7 @@ static void gen_onoff_get(uint8_t *data, uint16_t len)
 {
 	struct bt_mesh_onoff_status status;
 	struct model_data *model_bound;
+	struct net_buf_simple *buf = NET_BUF_SIMPLE(6);
 	struct bt_mesh_msg_ctx ctx = {
 		.net_idx = net.net_idx,
 		.app_idx = BT_MESH_KEY_DEV,
@@ -98,8 +99,13 @@ static void gen_onoff_get(uint8_t *data, uint16_t len)
 		goto fail;
 	}
 
+	net_buf_simple_init(buf, 0);
+	net_buf_simple_add_u8(buf, status.present_on_off);
+	net_buf_simple_add_u8(buf, status.target_on_off);
+	net_buf_simple_add_le32(buf, status.remaining_time);
+
 	tester_send(BTP_SERVICE_ID_MMDL, MMDL_GEN_ONOFF_GET, CONTROLLER_INDEX,
-		    (uint8_t *)&status, sizeof(status));
+		    buf->data, buf->len);
 	return;
 
 fail:
@@ -110,6 +116,7 @@ fail:
 static void gen_onoff_set(uint8_t *data, uint16_t len)
 {
 	struct mesh_gen_onoff_set *cmd = (void *)data;
+	struct net_buf_simple *buf = NET_BUF_SIMPLE(6);
 	struct bt_mesh_onoff_set set;
 	struct bt_mesh_onoff_status status;
 	struct bt_mesh_model_transition transition;
@@ -158,9 +165,13 @@ static void gen_onoff_set(uint8_t *data, uint16_t len)
 	}
 
 	if (cmd->ack) {
+		net_buf_simple_init(buf, 0);
+		net_buf_simple_add_u8(buf, status.present_on_off);
+		net_buf_simple_add_u8(buf, status.target_on_off);
+		net_buf_simple_add_le32(buf, status.remaining_time);
+
 		tester_send(BTP_SERVICE_ID_MMDL, MMDL_GEN_ONOFF_SET,
-			    CONTROLLER_INDEX, (uint8_t *)&status,
-			    sizeof(status));
+			    CONTROLLER_INDEX, buf->data, buf->len);
 		return;
 	}
 
@@ -172,6 +183,7 @@ fail:
 static void gen_lvl_get(uint8_t *data, uint16_t len)
 {
 	struct bt_mesh_lvl_status status;
+	struct net_buf_simple *buf = NET_BUF_SIMPLE(8);
 	struct model_data *model_bound;
 	struct bt_mesh_msg_ctx ctx = {
 		.net_idx = net.net_idx,
@@ -199,8 +211,13 @@ static void gen_lvl_get(uint8_t *data, uint16_t len)
 		goto fail;
 	}
 
+	net_buf_simple_init(buf, 0);
+	net_buf_simple_add_le16(buf, status.current);
+	net_buf_simple_add_le16(buf, status.target);
+	net_buf_simple_add_le32(buf, status.remaining_time);
+	
 	tester_send(BTP_SERVICE_ID_MMDL, MMDL_GEN_LVL_GET, CONTROLLER_INDEX,
-		    (uint8_t *)&status, sizeof(status));
+		    buf->data, buf->len);
 	return;
 
 fail:
@@ -213,6 +230,7 @@ static void gen_lvl_set(uint8_t *data, uint16_t len)
 	struct mesh_gen_lvl_set *cmd = (void *)data;
 	struct bt_mesh_lvl_set set;
 	struct bt_mesh_lvl_status status;
+	struct net_buf_simple *buf = NET_BUF_SIMPLE(8);
 	struct bt_mesh_model_transition transition;
 	struct model_data *model_bound;
 	struct bt_mesh_msg_ctx ctx = {
@@ -260,9 +278,13 @@ static void gen_lvl_set(uint8_t *data, uint16_t len)
 	}
 
 	if (cmd->ack) {
+		net_buf_simple_init(buf, 0);
+		net_buf_simple_add_le16(buf, status.current);
+		net_buf_simple_add_le16(buf, status.target);
+		net_buf_simple_add_le32(buf, status.remaining_time);
+		
 		tester_send(BTP_SERVICE_ID_MMDL, MMDL_GEN_LVL_SET,
-			    CONTROLLER_INDEX, (uint8_t *)&status,
-			    sizeof(status));
+			    CONTROLLER_INDEX, buf->data, buf->len);
 		return;
 	}
 
@@ -276,6 +298,7 @@ static void gen_lvl_delta_set(uint8_t *data, uint16_t len)
 	struct mesh_gen_lvl_delta_set *cmd = (void *)data;
 	struct bt_mesh_lvl_delta_set set;
 	struct bt_mesh_lvl_status status;
+	struct net_buf_simple *buf = NET_BUF_SIMPLE(8);
 	struct bt_mesh_model_transition transition;
 	struct model_data *model_bound;
 	struct bt_mesh_msg_ctx ctx = {
@@ -323,9 +346,14 @@ static void gen_lvl_delta_set(uint8_t *data, uint16_t len)
 	}
 
 	if (cmd->ack) {
+
+		net_buf_simple_init(buf, 0);
+		net_buf_simple_add_le16(buf, status.current);
+		net_buf_simple_add_le16(buf, status.target);
+		net_buf_simple_add_le32(buf, status.remaining_time);
+
 		tester_send(BTP_SERVICE_ID_MMDL, MMDL_GEN_LVL_DELTA_SET,
-			    CONTROLLER_INDEX, (uint8_t *)&status,
-			    sizeof(status));
+			    CONTROLLER_INDEX, buf->data, buf->len);
 		return;
 	}
 
@@ -340,6 +368,7 @@ static void gen_lvl_move_set(uint8_t *data, uint16_t len)
 	struct mesh_gen_lvl_move_set *cmd = (void *)data;
 	struct bt_mesh_lvl_move_set set;
 	struct bt_mesh_lvl_status status;
+	struct net_buf_simple *buf = NET_BUF_SIMPLE(8);
 	struct bt_mesh_model_transition transition;
 	struct model_data *model_bound;
 	struct bt_mesh_msg_ctx ctx = {
@@ -387,9 +416,14 @@ static void gen_lvl_move_set(uint8_t *data, uint16_t len)
 	}
 
 	if (cmd->ack) {
+
+		net_buf_simple_init(buf, 0);
+		net_buf_simple_add_le16(buf, status.current);
+		net_buf_simple_add_le16(buf, status.target);
+		net_buf_simple_add_le32(buf, status.remaining_time);
+
 		tester_send(BTP_SERVICE_ID_MMDL, MMDL_GEN_LVL_MOVE_SET,
-			    CONTROLLER_INDEX, (uint8_t *)&status,
-			    sizeof(status));
+			    CONTROLLER_INDEX, buf->data, buf->len);
 		return;
 	}
 
@@ -589,6 +623,7 @@ fail:
 static void gen_plvl_get(uint8_t *data, uint16_t len)
 {
 	struct bt_mesh_plvl_status status;
+	struct net_buf_simple *buf = NET_BUF_SIMPLE(8);
 	struct model_data *model_bound;
 	struct bt_mesh_msg_ctx ctx = {
 		.net_idx = net.net_idx,
@@ -616,8 +651,13 @@ static void gen_plvl_get(uint8_t *data, uint16_t len)
 		goto fail;
 	}
 
+	net_buf_simple_init(buf, 0);
+	net_buf_simple_add_le16(buf, status.current);
+	net_buf_simple_add_le16(buf, status.target);
+	net_buf_simple_add_le32(buf, status.remaining_time);
+	
 	tester_send(BTP_SERVICE_ID_MMDL, MMDL_GEN_PLVL_GET, CONTROLLER_INDEX,
-		    (uint8_t *)&status, sizeof(status));
+		    buf->data, buf->len);
 	return;
 
 fail:
@@ -628,6 +668,7 @@ fail:
 static void gen_plvl_set(uint8_t *data, uint16_t len)
 {
 	struct mesh_gen_plvl_set *cmd = (void *)data;
+	struct net_buf_simple *buf = NET_BUF_SIMPLE(8);
 	struct bt_mesh_plvl_status status;
 	struct bt_mesh_plvl_set set;
 	struct bt_mesh_model_transition transition;
@@ -675,9 +716,14 @@ static void gen_plvl_set(uint8_t *data, uint16_t len)
 	}
 
 	if (cmd->ack) {
+
+		net_buf_simple_init(buf, 0);
+		net_buf_simple_add_le16(buf, status.current);
+		net_buf_simple_add_le16(buf, status.target);
+		net_buf_simple_add_le32(buf, status.remaining_time);
+
 		tester_send(BTP_SERVICE_ID_MMDL, MMDL_GEN_PLVL_SET,
-			    CONTROLLER_INDEX, (uint8_t *)&status,
-			    sizeof(status));
+			    CONTROLLER_INDEX, buf->data, buf->len);
 		return;
 	}
 
@@ -819,6 +865,7 @@ fail:
 static void gen_plvl_range_get(uint8_t *data, uint16_t len)
 {
 	struct bt_mesh_plvl_range_status status;
+	struct net_buf_simple *buf = NET_BUF_SIMPLE(6);
 	struct model_data *model_bound;
 	struct bt_mesh_msg_ctx ctx = {
 		.net_idx = net.net_idx,
@@ -846,8 +893,13 @@ static void gen_plvl_range_get(uint8_t *data, uint16_t len)
 		goto fail;
 	}
 
+	net_buf_simple_init(buf, 0);
+	net_buf_simple_add_le16(buf, status.status);
+	net_buf_simple_add_le16(buf, status.range.min);
+	net_buf_simple_add_le16(buf, status.range.max);
+	
 	tester_send(BTP_SERVICE_ID_MMDL, MMDL_GEN_PLVL_RANGE_GET,
-		    CONTROLLER_INDEX, (uint8_t *)&status, sizeof(status));
+		    CONTROLLER_INDEX, buf->data, buf->len);
 	return;
 
 fail:
@@ -859,6 +911,7 @@ static void gen_plvl_range_set(uint8_t *data, uint16_t len)
 {
 	struct mesh_gen_plvl_range_set *cmd = (void *)data;
 	struct bt_mesh_plvl_range_status status;
+	struct net_buf_simple *buf = NET_BUF_SIMPLE(6);
 	struct bt_mesh_plvl_range set;
 	struct model_data *model_bound;
 	struct bt_mesh_msg_ctx ctx = {
@@ -896,9 +949,14 @@ static void gen_plvl_range_set(uint8_t *data, uint16_t len)
 	}
 
 	if (cmd->ack) {
+
+		net_buf_simple_init(buf, 0);
+		net_buf_simple_add_le16(buf, status.status);
+		net_buf_simple_add_le16(buf, status.range.min);
+		net_buf_simple_add_le16(buf, status.range.max);
+
 		tester_send(BTP_SERVICE_ID_MMDL, MMDL_GEN_PLVL_RANGE_SET,
-			    CONTROLLER_INDEX, (uint8_t *)&status,
-			    sizeof(status));
+			    CONTROLLER_INDEX, buf->data, buf->len);
 		return;
 	}
 
@@ -1151,6 +1209,8 @@ fail:
 static void gen_props_get(uint8_t *data, uint16_t len)
 {
 	struct mesh_gen_props_get *cmd = (void *)data;
+	struct net_buf_simple *buf = 
+		NET_BUF_SIMPLE(BT_MESH_PROP_MSG_MAXLEN_PROPS_STATUS);
 	uint16_t ids[10];
 	struct bt_mesh_prop_list status = {
 		.count = ARRAY_SIZE(ids),
@@ -1189,9 +1249,11 @@ static void gen_props_get(uint8_t *data, uint16_t len)
 		LOG_ERR("err=%d", err);
 		goto fail;
 	}
+	net_buf_simple_init(buf, 0);
+	net_buf_simple_add_mem(buf, status.ids, sizeof(*status.ids)*status.count);
 
 	tester_send(BTP_SERVICE_ID_MMDL, MMDL_GEN_PROPS_GET, CONTROLLER_INDEX,
-		    (uint8_t *)status.ids, sizeof(*status.ids) * status.count);
+		    buf->data, buf->len);
 	return;
 
 fail:
@@ -1202,7 +1264,8 @@ fail:
 static void gen_prop_get(uint8_t *data, uint16_t len)
 {
 	struct mesh_gen_prop_get *cmd = (void *)data;
-	struct net_buf_simple *buf = NET_BUF_SIMPLE(BT_MESH_TX_SDU_MAX);
+	struct net_buf_simple *buf = 
+		NET_BUF_SIMPLE(BT_MESH_PROP_MSG_MAXLEN_PROP_STATUS);
 	uint8_t val[10];
 	struct bt_mesh_prop_val status = {
 		.size = ARRAY_SIZE(val),
@@ -1253,7 +1316,8 @@ fail:
 static void gen_prop_set(uint8_t *data, uint16_t len)
 {
 	struct mesh_gen_prop_set *cmd = (void *)data;
-	struct net_buf_simple *buf = NET_BUF_SIMPLE(BT_MESH_TX_SDU_MAX);
+	struct net_buf_simple *buf = 
+		NET_BUF_SIMPLE(BT_MESH_PROP_MSG_MAXLEN_PROP_STATUS);
 	struct bt_mesh_prop prop = {
 		.id = cmd->id,
 		.user_access = cmd->access,
@@ -1621,7 +1685,8 @@ static void sensor_settings_get(uint8_t *data, uint16_t len)
 {
 	struct mesh_sensor_settings_get *cmd = (void *)data;
 	struct bt_mesh_sensor_type sensor;
-	struct net_buf_simple *buf = NET_BUF_SIMPLE(0);
+	struct net_buf_simple *buf = 
+		NET_BUF_SIMPLE(BT_MESH_SENSOR_MSG_MAXLEN_SETTING_STATUS);
 	const struct bt_mesh_sensor_type *sensor_type;
 	uint16_t ids[10];
 	uint32_t count = ARRAY_SIZE(ids);
@@ -1663,7 +1728,7 @@ static void sensor_settings_get(uint8_t *data, uint16_t len)
 		goto fail;
 	}
 
-	net_buf_simple_init(buf, (count + 1) * sizeof(uint16_t));
+	net_buf_simple_init(buf, 0);
 	net_buf_simple_add_le16(buf, sensor.id);
 	for (i = 0; i < count; ++i) {
 		net_buf_simple_add_le16(buf, ids[i]);
@@ -2363,6 +2428,7 @@ fail:
 static void light_lightness_get(uint8_t *data, uint16_t len)
 {
 	struct bt_mesh_lightness_status status;
+	struct net_buf_simple *buf = NET_BUF_SIMPLE(8);
 	struct model_data *model_bound;
 	struct bt_mesh_msg_ctx ctx = {
 		.net_idx = net.net_idx,
@@ -2390,8 +2456,13 @@ static void light_lightness_get(uint8_t *data, uint16_t len)
 		goto fail;
 	}
 
+	net_buf_simple_init(buf, 0);
+	net_buf_simple_add_le16(buf, status.current);
+	net_buf_simple_add_le16(buf, status.target);
+	net_buf_simple_add_le32(buf, status.remaining_time);
+
 	tester_send(BTP_SERVICE_ID_MMDL, MMDL_LIGHT_LIGHTNESS_GET,
-		    CONTROLLER_INDEX, (uint8_t *)&status, sizeof(status));
+		    CONTROLLER_INDEX, buf->data, buf->len);
 	return;
 
 fail:
@@ -2403,6 +2474,7 @@ static void light_lightness_set(uint8_t *data, uint16_t len)
 {
 	struct mesh_light_lightness_set *cmd = (void *)data;
 	struct bt_mesh_lightness_set set;
+	struct net_buf_simple *buf = NET_BUF_SIMPLE(8);
 	struct bt_mesh_lightness_status status;
 	struct bt_mesh_model_transition transition;
 	struct model_data *model_bound;
@@ -2449,9 +2521,14 @@ static void light_lightness_set(uint8_t *data, uint16_t len)
 		goto fail;
 	}
 	if (cmd->ack) {
+
+		net_buf_simple_init(buf, 0);
+		net_buf_simple_add_le16(buf, status.current);
+		net_buf_simple_add_le16(buf, status.target);
+		net_buf_simple_add_le32(buf, status.remaining_time);
+
 		tester_send(BTP_SERVICE_ID_MMDL, MMDL_LIGHT_LIGHTNESS_SET,
-			    CONTROLLER_INDEX, (uint8_t *)&status,
-			    sizeof(status));
+			    CONTROLLER_INDEX, buf->data, buf->len);
 		return;
 	}
 
@@ -2715,6 +2792,7 @@ static void light_lightness_range_get(uint8_t *data, uint16_t len)
 {
 	struct bt_mesh_lightness_range_status status;
 	struct model_data *model_bound;
+	struct net_buf_simple *buf = NET_BUF_SIMPLE(6);
 	struct bt_mesh_msg_ctx ctx = {
 		.net_idx = net.net_idx,
 		.app_idx = BT_MESH_KEY_DEV,
@@ -2741,8 +2819,12 @@ static void light_lightness_range_get(uint8_t *data, uint16_t len)
 		goto fail;
 	}
 
+	net_buf_simple_init(buf, 0);
+	net_buf_simple_add_le16(buf, status.status);
+	net_buf_simple_add_le16(buf, status.range.min);
+	net_buf_simple_add_le16(buf, status.range.max);
 	tester_send(BTP_SERVICE_ID_MMDL, MMDL_LIGHT_LIGHTNESS_RANGE_GET,
-		    CONTROLLER_INDEX, (uint8_t *)&status, sizeof(status));
+		    CONTROLLER_INDEX, buf->data, buf->len);
 	return;
 
 fail:
@@ -2754,6 +2836,7 @@ static void light_lightness_range_set(uint8_t *data, uint16_t len)
 {
 	struct mesh_light_lightness_range_set *cmd = (void *)data;
 	struct bt_mesh_lightness_range_status status;
+	struct net_buf_simple *buf = NET_BUF_SIMPLE(6);
 	struct bt_mesh_lightness_range set;
 	struct model_data *model_bound;
 	struct bt_mesh_msg_ctx ctx = {
@@ -2782,6 +2865,12 @@ static void light_lightness_range_set(uint8_t *data, uint16_t len)
 	if (cmd->ack) {
 		err = bt_mesh_lightness_cli_range_set(&lightness_cli, &ctx,
 						      &set, &status);
+
+		net_buf_simple_init(buf, 0);
+		net_buf_simple_add_le16(buf, status.status);
+		net_buf_simple_add_le16(buf, status.range.min);
+		net_buf_simple_add_le16(buf, status.range.max);
+
 	} else {
 		err = bt_mesh_lightness_cli_range_set_unack(&lightness_cli,
 							    &ctx, &set);
@@ -2793,8 +2882,7 @@ static void light_lightness_range_set(uint8_t *data, uint16_t len)
 
 	if (cmd->ack) {
 		tester_send(BTP_SERVICE_ID_MMDL, MMDL_LIGHT_LIGHTNESS_RANGE_SET,
-			    CONTROLLER_INDEX, (uint8_t *)&status,
-			    sizeof(status));
+			    CONTROLLER_INDEX, buf->data, buf->len);
 		return;
 	}
 
