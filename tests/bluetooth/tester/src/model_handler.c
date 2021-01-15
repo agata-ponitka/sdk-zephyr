@@ -588,7 +588,9 @@ static struct bt_mesh_elem elements[] = {
 			     BT_MESH_MODEL_SENSOR_CLI(&sensor_cli),
 			     BT_MESH_MODEL_TIME_CLI(&time_cli),
 			     BT_MESH_MODEL_LIGHTNESS_CLI(&lightness_cli),
-			     BT_MESH_MODEL_LIGHT_CTRL_CLI(&light_ctrl_cli)),
+			     BT_MESH_MODEL_LIGHT_CTRL_CLI(&light_ctrl_cli),
+			 	 BT_MESH_MODEL_LIGHT_CTL_CLI(&light_ctl_cli),
+			 	 BT_MESH_MODEL_SCENE_CLI(&scene_cli)),
 		     BT_MESH_MODEL_NONE),
 };
 

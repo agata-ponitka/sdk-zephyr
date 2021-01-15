@@ -35,6 +35,8 @@ extern struct bt_mesh_sensor_cli sensor_cli;
 extern struct bt_mesh_time_cli time_cli;
 extern struct bt_mesh_lightness_cli lightness_cli;
 extern struct bt_mesh_light_ctrl_cli light_ctrl_cli;
+extern struct bt_mesh_light_ctl_cli light_ctl_cli;
+extern struct bt_mesh_scene_cli scene_cli;
 
 struct model_data {
 	struct bt_mesh_model *model;

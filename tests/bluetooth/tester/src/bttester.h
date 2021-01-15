@@ -1260,6 +1260,55 @@ struct mesh_sensor_data_set_cmd {
 	uint8_t data[];
 } __packed;
 
+#define MMDL_LIGHT_CTL_STATES_GET	0x3e
+#define MMDL_LIGHT_CTL_STATES_SET	0x3f
+struct mesh_light_ctl_states_set {
+	uint8_t ack;
+	uint16_t light;
+	uint16_t temp;
+	int16_t delta_uv;
+	struct mesh_model_transition transition[0];
+} __packed;
+
+#define MMDL_LIGHT_CTL_TEMPERATURE_GET	0x40
+#define MMDL_LIGHT_CTL_TEMPERATURE_SET	0x41
+struct mesh_light_ctl_temperature_set {
+	uint8_t ack;
+	uint16_t temp;
+	int16_t delta_uv;
+	struct mesh_model_transition transition[0];
+} __packed;
+
+#define MMDL_LIGHT_CTL_DEFAULT_GET	0x42
+#define MMDL_LIGHT_CTL_DEFAULT_SET	0x43
+struct mesh_light_ctl_default_set {
+	uint8_t ack;
+	uint16_t light;
+	uint16_t temp;
+	int16_t delta_uv;
+} __packed;
+#define MMDL_LIGHT_CTL_TEMPERATURE_RANGE_GET	0x44
+#define MMDL_LIGHT_CTL_TEMPERATURE_RANGE_SET	0x45
+struct mesh_light_ctl_temp_range_set {
+	uint8_t ack;
+	uint16_t min;
+	uint16_t max;
+} __packed;
+
+#define MMDL_SCENE_GET	0x46
+#define MMDL_SCENE_REGISTER_GET	0x47
+#define MMDL_SCENE_STORE_PROCEDURE	0x48
+struct mesh_scene_ctl_store_procedure {
+	uint8_t ack;
+	uint16_t scene;
+} __packed;
+#define MMDL_SCENE_RECALL	0x49
+struct mesh_scene_ctl_recall {
+	uint8_t ack;
+	uint16_t scene;
+	struct mesh_model_transition transition[0];
+} __packed;
+
 void tester_init(void);
 void tester_rsp(uint8_t service, uint8_t opcode, uint8_t index, uint8_t status);
 void tester_send(uint8_t service, uint8_t opcode, uint8_t index, uint8_t *data,
